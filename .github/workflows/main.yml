@@ -1,0 +1,26 @@
+name: Build and Push Docker Image
+
+on:
+  push:
+    branches:
+      - main  # Change to your target branch if needed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Kaniko
+        uses: wercker/kaniko-action@v1
+        with:
+          dockerfile: ./Dockerfile
+          context: .
+          image: ${{ secrets.DOCKER_USERNAME }}/${{ github.repository }}:latest
+          docker_credentials: |
+            {
+              "username": "${{ secrets.DOCKER_USERNAME }}",
+              "password": "${{ secrets.DOCKER_PASSWORD }}"
+            }
